@@ -15,9 +15,13 @@ Add this repository as an input in your `flake.nix`:
  
 ```nix
 {
-  inputs = {
+inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    kakaotalk-nix.url = "github:aanhlongg/kakaotalk-nix";
+    
+    kakaotalk-nix = {
+      url = "github:aanhlongg/kakaotalk-nix";
+      inputs.nixpkgs.follows = "nixpkgs"; 
+    };
   };
  
   outputs = { nixpkgs, kakaotalk-nix, ... }: {
@@ -25,7 +29,7 @@ Add this repository as an input in your `flake.nix`:
       modules = [
         ({ pkgs, ... }: {
           environment.systemPackages = [
-            inputs.kakaotalk-nix.packages.${pkgs.system}.kakaotalk
+            kakaotalk-nix.packages.${pkgs.system}.default
           ];
         })
       ];
@@ -39,7 +43,7 @@ Add this repository as an input in your `flake.nix`:
 Clone this repository and build with:
  
 ```bash
-nix-build -E 'with import <nixpkgs> {}; callPackage ./kakaotalk.nix {}'
+NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./kakaotalk.nix {}'
 ```
  
 Or add it to your configuration by importing and calling the package:
