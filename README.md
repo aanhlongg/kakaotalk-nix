@@ -1,7 +1,7 @@
 # kakaotalk-nix
 
 A Nix derivation to package [KakaoTalk](https://www.kakaocorp.com/page/service/service/KakaoTalk) for Nix/NixOS via [Wine](https://www.winehq.org/). \
-KakaoTalk is South Korea's dominant instant messaging platformand has no official Linux client.
+KakaoTalk is South Korea's dominant instant messaging platform and has no official Linux client.
 
 > This derivation was submitted as a pull request to [nixpkgs](https://github.com/NixOS/nixpkgs/pull/436278/). Until it is merged, you can use it directly from this repository.
 
@@ -25,7 +25,7 @@ Add this repository as an input in your `flake.nix`:
       modules = [
         ({ pkgs, ... }: {
           environment.systemPackages = [
-            kakaotalk-nix.packages.${pkgs.system}.kakaotalk
+            inputs.kakaotalk-nix.packages.${pkgs.system}.kakaotalk
           ];
         })
       ];
