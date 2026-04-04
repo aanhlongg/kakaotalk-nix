@@ -19,9 +19,10 @@
           };
         in
         {
-          kakaotalk = pkgs.callPackage ./kakaotalk.nix { };
-          default = self.packages.${system}.kakaotalk;
+          default = pkgs.callPackage ./kakaotalk.nix { };
         }
       );
+
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
     };
 }
