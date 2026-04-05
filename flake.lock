@@ -1,5 +1,42 @@
 {
   "nodes": {
+    "erosanix": {
+      "inputs": {
+        "flake-compat": "flake-compat",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1775241072,
+        "narHash": "sha256-YpXDFEkd+JjxZOgTnvt5GHvEhORxkAda9Lc1e8e8Ox8=",
+        "owner": "emmanuelrosa",
+        "repo": "erosanix",
+        "rev": "14ac50e5ddefdb1c5ed66c11d2c6fa68959d690a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "emmanuelrosa",
+        "repo": "erosanix",
+        "type": "github"
+      }
+    },
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1673956053,
+        "narHash": "sha256-4gtG9iQuiKITOjNQQeQIpoIB6b16fm+504Ch3sNKLd8=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "35bb57c0c8d8b62bbfd284272c928ceb64ddbde9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1775036866,
@@ -18,6 +55,7 @@
     },
     "root": {
       "inputs": {
+        "erosanix": "erosanix",
         "nixpkgs": "nixpkgs"
       }
     }

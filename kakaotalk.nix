@@ -1,21 +1,21 @@
 {
   lib,
-  stdenv,
-  fetchurl,
-  makeWrapper,
-  copyDesktopItems,
-  makeDesktopItem,
-  runtimeShell,
+  mkWindowsAppNoCC,
   wine,
+  fetchurl,
+  makeDesktopItem,
+  copyDesktopItems,
 }:
 
-stdenv.mkDerivation (finalAttrs: {
+mkWindowsAppNoCC rec {
+  inherit wine;
+
   pname = "kakaotalk";
   version = "26.2.0";
 
   src = fetchurl {
-    url = "https://app-pc.kakaocdn.net/talk/win32/KakaoTalk_Setup.exe";
-    hash = "sha256-Jnd+hdY8ZWpl9asGcFyy3RjImuO3M/hWX/IfCclQGBk=";
+    url = "https://lk.kakaocdn.net/talkpc/talk/win32/x64/KakaoTalk_Setup.exe";
+    hash = "sha256-Fl4DFg2aGtual/iAIZ2zYblzQIjSSNPAzqP1WxwhF/c=";
   };
 
   icon = fetchurl {
@@ -24,48 +24,47 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-1RTNnl3GN84RhvWLjud5RNdHUu88CwsSyfNrko8IqCs=";
   };
 
-  nativeBuildInputs = [
-    makeWrapper
-    copyDesktopItems
-  ];
-
-  buildInputs = [
-    wine
-  ];
-
   dontUnpack = true;
-  dontBuild = true;
+
+  wineArch = "win64";
+  enableMonoBootPrompt = false;
+
+  fileMap = {
+    "$HOME/.local/share/kakaotalk" = "drive_c/users/$USER/AppData/Local/Kakao/KakaoTalk";
+  };
+
+  winAppInstall = ''
+    wine ${src} /S
+  '';
+
+  winAppPreRun = "";
+
+  # disables the option use_new_loco_asio that breaks the first login
+  winAppRun = ''
+    CONFIG_FILE="$WINEPREFIX/drive_c/users/$USER/AppData/Local/Kakao/KakaoTalk/pref.ini"
+    (
+      for i in {1..30}; do
+        if [ -f "$CONFIG_FILE" ]; then
+          sed -i 's/use_new_loco_asio = .*/use_new_loco_asio = no/' "$CONFIG_FILE"
+          if ! grep -q "use_new_loco_asio" "$CONFIG_FILE"; then
+            echo "use_new_loco_asio = no" >> "$CONFIG_FILE"
+          fi
+          break
+        fi
+        sleep 1
+      done
+    ) &
+    wine "$WINEPREFIX/drive_c/Program Files/Kakao/KakaoTalk/KakaoTalk.exe" "$ARGS"
+  '';
+
+  winAppPostRun = "";
+
+  nativeBuildInputs = [ copyDesktopItems ];
 
   installPhase = ''
     runHook preInstall
-    mkdir -p $out/bin
-    cat <<'EOF' > $out/bin/kakaotalk
-    #!${runtimeShell}
-    export PATH=${wine}/bin:$PATH
-    export WINEARCH=win32
-    export WINEPREFIX="''${KAKAOTALK_HOME:-"''${XDG_DATA_HOME:-"''${HOME}/.local/share"}/kakaotalk"}/wine"
-    export WINEDLLOVERRIDES="mscoree=;winemenubuilder.exe="
-    if [ ! -d "$WINEPREFIX" ] ; then
-      mkdir -p "$WINEPREFIX"
-      wine ${finalAttrs.src} /S
-    fi
-    wine "$WINEPREFIX/drive_c/Program Files/Kakao/KakaoTalk/KakaoTalk.exe" &
-    KAKAO_PID=$!
-    CONFIG_FILE="$WINEPREFIX/drive_c/users/$(whoami)/AppData/Local/Kakao/KakaoTalk/pref.ini"
-    for i in {1..30}; do
-      if [ -f "$CONFIG_FILE" ]; then
-        sed -i 's/use_new_loco_asio = .*/use_new_loco_asio = no/' "$CONFIG_FILE"
-        if ! grep -q "use_new_loco_asio" "$CONFIG_FILE"; then
-          echo "use_new_loco_asio = no" >> "$CONFIG_FILE"
-        fi
-        break
-      fi
-      sleep 1
-    done
-    wait $KAKAO_PID
-    EOF
-    chmod +x $out/bin/kakaotalk
-    install -Dm644 ${finalAttrs.icon} $out/share/icons/hicolor/256x256/apps/kakaotalk.png
+    ln -s $out/bin/.launcher $out/bin/${pname}
+    install -Dm644 ${icon} $out/share/icons/hicolor/256x256/apps/kakaotalk.png
     runHook postInstall
   '';
 
@@ -75,7 +74,7 @@ stdenv.mkDerivation (finalAttrs: {
       exec = "kakaotalk";
       icon = "kakaotalk";
       desktopName = "KakaoTalk";
-      comment = finalAttrs.meta.description;
+      comment = meta.description;
       categories = [
         "Network"
         "InstantMessaging"
@@ -92,4 +91,4 @@ stdenv.mkDerivation (finalAttrs: {
     platforms = lib.platforms.linux;
     mainProgram = "kakaotalk";
   };
-})
+}
