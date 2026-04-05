@@ -14,8 +14,8 @@ stdenv.mkDerivation (finalAttrs: {
   version = "26.2.0";
 
   src = fetchurl {
-    url = "https://app-pc.kakaocdn.net/talk/win32/KakaoTalk_Setup.exe";
-    hash = "sha256-Jnd+hdY8ZWpl9asGcFyy3RjImuO3M/hWX/IfCclQGBk=";
+    url = "https://lk.kakaocdn.net/talkpc/talk/win32/x64/KakaoTalk_Setup.exe";
+    hash = "sha256-Fl4DFg2aGtual/iAIZ2zYblzQIjSSNPAzqP1WxwhF/c=";
   };
 
   icon = fetchurl {
