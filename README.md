@@ -5,6 +5,12 @@ KakaoTalk is South Korea's dominant instant messaging platform and has no offici
 
 > This derivation was submitted as a pull request to [nixpkgs](https://github.com/NixOS/nixpkgs/pull/436278/). Until it is merged, you can use it directly from this repository.
 
+This is packaged using [`mkWindowsAppNoCC`](https://github.com/emmanuelrosa/erosanix/tree/master/pkgs/mkwindowsapp), a community packaging helper.
+Since it stores Wine prefix layers inside `$HOME/.cache/mkWindows`, you should periodically run the helper's custom garbage collector after running `nix-collect-garbage`, like this:
+```
+nix run github:emmanuelrosa/erosanix#mkwindowsapp-tools
+```
+
 ---
  
 ## Usage
@@ -15,11 +21,11 @@ Add this repository as an input in your `flake.nix`:
  
 ```nix
 {
-inputs = {
+  inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    
+      
     kakaotalk-nix = {
-      url = "github:aanhlongg/kakaotalk-nix";
+      url = "github:aanhlongg/kakaotalk-nix/mkwindowsapp";
       inputs.nixpkgs.follows = "nixpkgs"; 
     };
   };
@@ -38,23 +44,20 @@ inputs = {
 }
 ```
  
-### Without Flakes
+### Build yourself:
  
-Clone this repository and build with:
+Clone this repository:
  
 ```bash
-NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./kakaotalk.nix {}'
+git clone -b mkwindowsapp https://github.com/aanhlongg/kakaotalk-nix
 ```
  
-Or add it to your configuration by importing and calling the package:
+and build with:
  
-```nix
-{ pkgs, ... }:
-let
-  kakaotalk = pkgs.callPackage /path/to/kakaotalk.nix {};
-in {
-  environment.systemPackages = [ kakaotalk ];
-}
+```bash
+cd kakaotalk-nix
+nix build .#default
+./result/bin/kakaotalk
 ```
  
 ## Workarounds
