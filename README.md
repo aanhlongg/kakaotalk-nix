@@ -5,6 +5,8 @@ KakaoTalk is South Korea's dominant instant messaging platform and has no offici
 
 > This derivation was submitted as a pull request to [nixpkgs](https://github.com/NixOS/nixpkgs/pull/436278/). Until it is merged, you can use it directly from this repository.
 
+A version of this using the [`mkWindowsAppNoCC`](https://github.com/emmanuelrosa/erosanix/tree/master/pkgs/mkwindowsapp) community packaging helper is available on  the [mkwindowsapp](https://github.com/aanhlongg/kakaotalk-nix/tree/mkwindowsapp) branch.
+
 ---
  
 ## Usage
@@ -15,7 +17,7 @@ Add this repository as an input in your `flake.nix`:
  
 ```nix
 {
-inputs = {
+  inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     
     kakaotalk-nix = {
