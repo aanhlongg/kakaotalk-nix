@@ -11,11 +11,11 @@ mkWindowsAppNoCC rec {
   inherit wine;
 
   pname = "kakaotalk";
-  version = "26.2.0";
+  version = "26.8.2";
 
   src = fetchurl {
     url = "https://lk.kakaocdn.net/talkpc/talk/win32/x64/KakaoTalk_Setup.exe";
-    hash = "sha256-Fl4DFg2aGtual/iAIZ2zYblzQIjSSNPAzqP1WxwhF/c=";
+    hash = "sha256-S5BGIthztjC6eMKRdIv9y0xRsMx6N9M5NjL8/wQvpyM=";
   };
 
   icon = fetchurl {
@@ -41,19 +41,19 @@ mkWindowsAppNoCC rec {
 
   # disables the option use_new_loco_asio that breaks the first login
   winAppRun = ''
-    CONFIG_FILE="$WINEPREFIX/drive_c/users/$USER/AppData/Local/Kakao/KakaoTalk/pref.ini"
-    (
-      for i in {1..30}; do
-        if [ -f "$CONFIG_FILE" ]; then
-          sed -i 's/use_new_loco_asio = .*/use_new_loco_asio = no/' "$CONFIG_FILE"
-          if ! grep -q "use_new_loco_asio" "$CONFIG_FILE"; then
-            echo "use_new_loco_asio = no" >> "$CONFIG_FILE"
-          fi
-          break
-        fi
-        sleep 1
-      done
-    ) &
+    # CONFIG_FILE="$WINEPREFIX/drive_c/users/$USER/AppData/Local/Kakao/KakaoTalk/pref.ini"
+    # (
+    #   for i in {1..30}; do
+    #     if [ -f "$CONFIG_FILE" ]; then
+    #       sed -i 's/use_new_loco_asio = .*/use_new_loco_asio = no/' "$CONFIG_FILE"
+    #       if ! grep -q "use_new_loco_asio" "$CONFIG_FILE"; then
+    #         echo "use_new_loco_asio = no" >> "$CONFIG_FILE"
+    #       fi
+    #       break
+    #     fi
+    #     sleep 1
+    #   done
+    # ) &
     wine "$WINEPREFIX/drive_c/Program Files/Kakao/KakaoTalk/KakaoTalk.exe" "$ARGS"
   '';
 
