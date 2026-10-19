@@ -11,11 +11,11 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "kakaotalk";
-  version = "26.2.0";
+  version = "26.8.2";
 
   src = fetchurl {
     url = "https://lk.kakaocdn.net/talkpc/talk/win32/x64/KakaoTalk_Setup.exe";
-    hash = "sha256-Fl4DFg2aGtual/iAIZ2zYblzQIjSSNPAzqP1WxwhF/c=";
+    hash = "sha256-S5BGIthztjC6eMKRdIv9y0xRsMx6N9M5NjL8/wQvpyM=";
   };
 
   icon = fetchurl {
